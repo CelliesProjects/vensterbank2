@@ -1,0 +1,107 @@
+<!doctype HTML>
+<html lang="en">
+<head>
+<style>
+body{
+  text-align:center;
+}
+button{
+  width:200px;
+}
+#colorPicker{
+  width:200px;
+  height:200px;
+}
+</style>
+<title>Vensterbank</title>
+<meta charset="utf-8">
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+</head>
+<body>
+<h3>Vensterbank command & control</h3>
+<p><input id="colorPicker" type="color" /></p>
+<p><button type="button">TEMPERATURE</button></p>
+<input type="range" id="brightnessSlider" min="0" max="100">
+<script>
+const vensterbank = '';
+$(document).ready( function(){
+//
+  $.get( vensterbank + "/api/getcolor", function(data){
+    //console.log( data );
+  })
+    .done( function( data ){
+      $('#colorPicker').val("#"+data)
+
+    })
+    .fail( function( data ){
+
+    })
+    .always( function( data ){
+      console.log( data );
+    });
+
+  $.get( vensterbank + "/api/getbrightness",
+  {
+    color : $(this).val().substring(1)
+  })
+    .done( function( data ){
+      $('#brightnessSlider').val(data*100)
+
+    })
+    .fail( function( data ){
+
+    })
+    .always( function( data ){
+      console.log( data );
+    });
+});
+$('#colorPicker').on( 'input', function()
+{
+  $(this).prop( "disabled", true );
+  $.get( vensterbank + "/api/setcolor",
+  {
+    color : $(this).val().substring(1)
+  })
+    .done( function( data ){
+      $('#colorPicker').prop( "disabled", false );
+    })
+    .fail( function( data ){
+
+    })
+    .always( function( data ){
+      console.log( data );
+    });
+})
+$('button').on( 'click', function()
+{
+  $.get( vensterbank + "/api/tempmode")
+    .done( function( data ){
+
+    })
+    .fail( function( data ){
+
+    })
+    .always( function( data ){
+      console.log( data );
+    });
+});
+$('#brightnessSlider').on( 'change', function()
+{
+  //$(this).prop( "disabled", true );
+  $.get( vensterbank + "/api/setbrightness",
+  {
+    brightness : $(this).val() / 100
+  })
+    .done( function( data ){
+      //$('#brightnessSlider').prop( "disabled", false );
+    })
+    .fail( function( data ){
+
+    })
+    .always( function( data ){
+      console.log( data );
+    });
+})
+</script>
+</body>
